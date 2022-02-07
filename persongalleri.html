@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bistro Babushka</title>
+</head>
+
+<body>
+  <style>
+    section {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    article {
+      border: 2px solid orange;
+      border-radius: 10px;
+    }
+
+    .grid-menu img {
+      width: 100%;
+      border-radius: 9px;
+      object-fit: cover;
+      aspect-ratio: 8/5;
+    }
+
+    .info {
+      padding: 0 1rem;
+    }
+
+    .valgt {
+      background-color: orange;
+    }
+  </style>
+  <h1>persongalleri</h1>
+  <button data-kategori="alle" class="valgt">Alle</button>
+  <button data-kategori="forretter">Forretter</button>
+  <button data-kategori="hovedretter">Hovedretter</button>
+  <button data-kategori="sideorders">Sideorders</button>
+  <button data-kategori="desserter">Desserter</button>
+  <button data-kategori="drikkevarer">Drikkevarer</button>
+  <section class="container"></section>
+  <template>
+    <article class="grid-menu">
+      <img src="" alt="" />
+      <div class="info">
+        <h2 class="title"></h2>
+        <p class="short"></p>
+        <p class="price"></p>
+      </div>
+    </article>
+  </template>
+  <script>
+    const url = "https://babushka-dd8a.restdb.io/rest/menu";
+
+    const options = {
+      headers: {
+        "x-apikey": "600ec2fb1346a1524ff12de4",
+      },
+    };
+
+    document.addEventListener("DOMContentLoaded", start)
+    let menu;
+    let filter = "alle";
+    function start() {
+      const filterKnapper = document.querySelectorAll("button");
+      filterKnapper.forEach(knap => knap.addEventListener("click", filtrerPersoner));
+      hentData();
+    }
+
+    function filtrerPersoner() {
+      filter = this.dataset.kategori;
+      document.querySelector(".valgt").classList.remove("valgt");
+      this.classList.add("valgt");
+      visMenu();
+    }
+
+    async function hentData() {
+      const respons = await fetch(url, options);
+      menu = await respons.json();
+      console.log("Retter", menu)
+      visMenu();
+    }
+
+    function visMenu() {
+      let container = document.querySelector(".container");
+      let temp = document.querySelector("template");
+      container.textContent = "";
+
+      menu.forEach((ret) => {
+        if (filter == "alle" || filter == ret.kategori) {
+          const klon = temp.cloneNode(true).content;
+          klon.querySelector("img").src = `assets/${ret.billednavn}-md.jpg`;
+          klon.querySelector(".title").textContent = ret.navn;
+          klon.querySelector(".short").textContent = ret.kortbeskrivelse;
+          klon.querySelector(".price").textContent = `Pris: ${ret.pris},-`;
+          container.appendChild(klon);
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>
