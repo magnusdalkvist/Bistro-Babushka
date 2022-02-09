@@ -10,6 +10,44 @@
 
 <body>
   <style>
+    #popup {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      position: fixed;
+      inset: 0 0 0 0;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    #luk {
+      position: fixed;
+      left: 1rem;
+      top: 1rem;
+      font-size: 2rem;
+      font-weight: bold;
+      width: 2.5rem;
+      height: 2.5rem;
+      color: white;
+      cursor: pointer;
+      z-index: 100;
+    }
+
+    #popup article {
+      width: 50%;
+      max-width: 1000px;
+      max-height: 80%;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      background-color: white;
+      overflow-y: auto;
+      border-radius: 1rem;
+    }
+
+    #popup img {
+      width: 100%;
+    }
+
     body {
       margin: 0;
     }
@@ -70,6 +108,16 @@
       margin: 1rem 0;
     }
   </style>
+  <section id="popup">
+    <div id="luk">&#x2715</div>
+    <article>
+      <img src="" alt="" />
+      <h2 class="title"></h2>
+      <b>Beskrivelse</b>
+      <p class="long"></p>
+      <p class="price"></p>
+    </article>
+  </section>
   <header>
     <h1>★ Bistro Babushka ★</h1>
   </header>
@@ -139,9 +187,22 @@
           klon.querySelector(".title").textContent = ret.navn;
           klon.querySelector(".short").textContent = ret.kortbeskrivelse;
           klon.querySelector(".price").textContent = `Pris: ${ret.pris},-`;
+          klon.querySelector("article").addEventListener("click", () => visDetaljer(ret));
           container.appendChild(klon);
         }
       });
+    }
+
+    popup = document.querySelector("#popup");
+    document.querySelector("#luk").addEventListener("click", () => popup.style.display = "none");
+
+    function visDetaljer(ret) {
+      console.log("menu", ret);
+      popup.style.display = "flex";
+      popup.querySelector("img").src = `assets/${ret.billednavn}-md.jpg`;
+      popup.querySelector(".title").textContent = ret.navn;
+      popup.querySelector(".long").textContent = ret.langbeskrivelse;
+      popup.querySelector(".price").textContent = `Pris: ${ret.pris},-`;
     }
   </script>
 </body>
